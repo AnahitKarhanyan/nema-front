@@ -5,6 +5,7 @@ import requests from './services/requests'
 
 class App extends Component {
   componentWillMount(){
+    this.setState({lang:this.props.lang})
     this.setState({user:{}});
     const {  getProfile } = this.props.auth;
     if(!this.props.auth.isAuthenticated()){return};
@@ -16,7 +17,12 @@ class App extends Component {
   }
 
 
-
+  changeLanguage(event){
+    const value = event.target.value;
+    //this.getState('lang').set('lang',value)
+    this.setState({lang:{lang:value}})
+    this.props.lang.lang=value
+  }
   goTo(route) {
     this.props.history.replace(`/${route}`);
     console.log(this)
@@ -50,13 +56,18 @@ class App extends Component {
             <Navbar.Brand>
               <a href="#">Auth0 - React</a>
             </Navbar.Brand>
+
+            <select onChange={this.changeLanguage.bind(this)}>
+                <option value='en'>En</option>
+                <option value='hy'>Hy</option>
+            </select>
             <Button
               bsStyle="primary"
               className="btn-margin"
               onClick={this.goTo.bind(this, 'home')}
             >
               Home
-            </Button>
+            </Button> {this.state.lang.lang}
             {
               !isAuthenticated() && (
                   <Button
@@ -76,6 +87,28 @@ class App extends Component {
                     onClick={this.goTo.bind(this, 'profile')}
                   >
                     Page1
+                  </Button>
+                )
+            }
+            {
+              hasAccess(this.state.user,'page2') && (
+                  <Button
+                    bsStyle="primary"
+                    className="btn-margin"
+                    onClick={this.goTo.bind(this, 'page2')}
+                  >
+                    Page2
+                  </Button>
+                )
+            }
+            {
+              hasAccess(this.state.user,'page3') && (
+                  <Button
+                    bsStyle="primary"
+                    className="btn-margin"
+                    onClick={this.goTo.bind(this, 'page3')}
+                  >
+                    Page3
                   </Button>
                 )
             }

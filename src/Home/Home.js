@@ -9,7 +9,10 @@ class Home extends Component {
   componentWillMount(){
     this.setState({ profile: {} });
     this.setState({user:{}});
+    console.log(this.props.auth.isAuthenticated());
+    if(!this.props.auth.isAuthenticated()){return}
     const {  getProfile } = this.props.auth;
+
       getProfile((err,user ,profile) => {
         this.setState({ profile });
         this.setState({user });
