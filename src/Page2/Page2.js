@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 
 
 
-
-class Info extends Component{
+class Page2 extends Component{
   render(){
     return(
-      <div>Page3</div>
+      <div>PAGE2</div>
     )
   }
 }
 
-export default Info;
+export default Page2;

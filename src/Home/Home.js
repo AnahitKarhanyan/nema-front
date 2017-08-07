@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 import requests from './../services/requests'
 import { Button } from 'react-bootstrap';
 
+import lang from './../services/lang';
+
+
 
 
 class Home extends Component {
 
   componentWillMount(){
+    this.setState({lang:this.props.lang.lang})
+
     this.setState({ profile: {} });
     this.setState({user:{}});
+
     console.log(this.props.auth.isAuthenticated());
     if(!this.props.auth.isAuthenticated()){return}
     const {  getProfile } = this.props.auth;
@@ -23,6 +29,9 @@ class Home extends Component {
 
 
   }
+  componentWillReceiveProps(nextProps){
+    this.setState({lang:nextProps.lang.lang});
+  }
   login() {
     this.props.auth.login();
   }
@@ -32,23 +41,28 @@ class Home extends Component {
   }
   createUser(){
     console.log(this);
-    requests.createUser({"name":this.state.profile.name,"role":this.state.role})
+    requests.createUser({"name":this.state.profile.name,"role":this.state.role}).then(()=>{
+      window.location.reload();
+    },(err)=>{
+      alert('Something went wrong'),console.log(err);
+    })
   }
   render() {
     const { isAuthenticated } = this.props.auth;
-    const user = this.state.user;
-    console.log(user)
+    const user = this.state.user||{};
+    const ln=lang[this.state.lang]||{};
+
     return (
       <div className="container">
         {
           isAuthenticated() && (
               <div>
-                You are logged in!
-                {user.name && (<div>Hi {user.name}</div>)}
+                {ln.LOGGED_IN}
+                {user && user.name && (<div>Hi {user.name}</div>)}
                 {!user.name && (<div>
                       <div>
-                      Your role is:<input type="text" value={this.state.role} onChange={this.changeRole.bind(this)} />
-                        <Button onClick={this.createUser.bind(this)}></Button>
+                      {ln.ROLE_IS}:<input type="text" value={this.state.role} onChange={this.changeRole.bind(this)} />
+                        <Button onClick={this.createUser.bind(this)}>Send</Button>(admin,moderator,user)
                       </div>
                   </div>)}
               </div>
@@ -58,7 +72,7 @@ class Home extends Component {
         {
           !isAuthenticated() && (
               <h4>
-                You are not logged in! Please{' '}
+                {ln.PLEASE_LOGIN} Please{' '}
                 <a
                   style={{ cursor: 'pointer' }}
                   onClick={this.login.bind(this)}

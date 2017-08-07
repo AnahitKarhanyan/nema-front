@@ -5,6 +5,9 @@ import Home from './Home/Home';
 import Profile from './Profile/Profile';
 import Ping from './Ping/Ping';
 import Admin from './Admin/Admin';
+import Info from './Info/Info';
+import Page2 from './Page2/Page2';
+
 import Callback from './Callback/Callback';
 import Auth from './Auth/Auth';
 import history from './history';
@@ -22,17 +25,24 @@ export const makeMainRoutes = () => {
     <BrowserRouter history={history} component={App}>
         <div>
           <Route path="/" render={(props) => <App auth={auth} lang={lang} {...props} />} />
-          <Route path="/home" render={(props) => <Home auth={auth} {...props} />} />
+          <Route path="/home"  render={(props) => <Home lang={lang} auth={auth} {...props} />} />
           <Route path="/info" render={(props) =>
               !auth.isAuthenticated()?(
                 <Redirect to="/home" />
               ):(
-                <Profile auth={auth} {...props} />
+                <Info auth={auth} {...props} />
               )
           }
             />
-
-          <Route path="/profile" render={(props) => (
+            <Route path="/page2" render={(props) =>
+                !auth.isAuthenticated()?(
+                  <Redirect to="/home" />
+                ):(
+                  <Page2 auth={auth} {...props} />
+                )
+            }
+              />
+          <Route path="/page1" render={(props) => (
             !auth.isAuthenticated() ? (
               <Redirect to="/home"/>
             ) : (

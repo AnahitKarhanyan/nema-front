@@ -1,27 +1,31 @@
 import React, { Component } from 'react';
 import { Navbar, Button } from 'react-bootstrap';
 import './App.css';
-import requests from './services/requests'
+import requests from './services/requests';
+import lang from './services/lang';
+
 
 class App extends Component {
   componentWillMount(){
-    this.setState({lang:this.props.lang})
+    this.setState({lang:this.props.lang.lang});
     this.setState({user:{}});
     const {  getProfile } = this.props.auth;
     if(!this.props.auth.isAuthenticated()){return};
       getProfile((err, user) => {
         this.setState({ user });
-        console.log(user);
 
       });
   }
-
+  componentWillReceiveProps(nextProps){
+    this.setState({lang:nextProps.lang.lang});
+  }
 
   changeLanguage(event){
     const value = event.target.value;
     //this.getState('lang').set('lang',value)
     this.setState({lang:{lang:value}})
-    this.props.lang.lang=value
+    this.props.lang.lang=value;
+    this.goTo(window.location.pathname.substr(1));
   }
   goTo(route) {
     this.props.history.replace(`/${route}`);
@@ -37,6 +41,7 @@ class App extends Component {
   }
 
   hasAccess(user,page){
+    if(!user){return false};
     if (user.role=='admin') {
       return true;
     }
@@ -49,6 +54,8 @@ class App extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
     const hasAccess = this.hasAccess;
+    const ln=lang[this.state.lang]||{};
+
     return (
       <div>
         <Navbar fluid>
@@ -66,7 +73,7 @@ class App extends Component {
               className="btn-margin"
               onClick={this.goTo.bind(this, 'home')}
             >
-              Home
+              {ln.HOME}
             </Button> {this.state.lang.lang}
             {
               !isAuthenticated() && (
@@ -84,7 +91,7 @@ class App extends Component {
                   <Button
                     bsStyle="primary"
                     className="btn-margin"
-                    onClick={this.goTo.bind(this, 'profile')}
+                    onClick={this.goTo.bind(this, 'page1')}
                   >
                     Page1
                   </Button>
@@ -106,7 +113,7 @@ class App extends Component {
                   <Button
                     bsStyle="primary"
                     className="btn-margin"
-                    onClick={this.goTo.bind(this, 'page3')}
+                    onClick={this.goTo.bind(this, 'info')}
                   >
                     Page3
                   </Button>

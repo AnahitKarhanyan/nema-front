@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { Checkbox } from 'react-bootstrap';
 
-
-//import { API_URL } from './../constants';
-//import axios from 'axios';
+import lang from './../services/lang';
 import requests from './../services/requests';
-var CheckBoxList = require('react-checkbox-list');
 
 
 
@@ -17,8 +14,10 @@ class Admin extends Component{
    this.state = {
      user: {},
      moderatorPages: [],
-     userPages:[]
+     userPages:[],
+     lang:this.props.lang.lang
    };
+
    const {  getProfile } = this.props.auth;
 //    this.setState({user:{}});
    getProfile((err, user) => {
@@ -35,7 +34,9 @@ class Admin extends Component{
    this.handleUserListChange = this.handleUserListChange.bind(this);
    this.handleModeratorListChange = this.handleModeratorListChange.bind(this);
  }
-
+componentWillReceiveProps(nextProps){
+  this.setState({lang:nextProps.lang.lang});
+}
 //   componentWillMount(){
 //     /*this.setState({user:{}});
 //     this.setState({moderatorPages:[]});
@@ -60,7 +61,9 @@ class Admin extends Component{
   save(user){
     let list=user=='moderator'?this.state.moderatorPages:this.state.userPages;
     requests.updateUser({type:user,pages:list}).then(()=>{
-      console.log('ha');
+      alert('done');
+    },()=>{
+      alert('Something went wrong');
     })
   }
   handleUserListChange(event) {
@@ -106,8 +109,7 @@ class Admin extends Component{
 }*/
   render (){
     const user = this.state.user;
-    const time = new Date().getTime();
-
+    const ln=lang[this.state.lang]||{};
 
     /*for(let i=0;i<moderatorPages.length;i++){
       console.log(i);
@@ -122,7 +124,7 @@ class Admin extends Component{
           <h3>Manage Users</h3>
 
           <div>
-            <h6>Users pages</h6>
+            <h6>{ln.USER} pages</h6>
               Page 1 {this.props.lang.lang}<input type="checkbox"
                     name='page1'
                   checked={this.state.userPages.includes('page1')}
